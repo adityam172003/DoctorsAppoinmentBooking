@@ -15,16 +15,21 @@ exports.bookAppoinment = async (req,res)=>{
     const userId  = req.rootuser._id;
 
     // taking doctor id from queries 
-  
+    
+
+    // get date from body 
+
+
+
     const doctorId = req.query.doctorId;
     let dt   = new Date();
 
     let date,month,year;
-    date = dt.getDate();
+    date = dt.getDate();  // parseInt(req.body.date);
     month=dt.getMonth();
     year = dt.getFullYear();
     console.log(date+'/'+month+'/'+year);
-    const Symptoms = req.body.Symptoms;
+    
     
     if(!Symptoms)res.status(401).send("no symptom");
     // getting expected time 
@@ -68,33 +73,66 @@ exports.bookAppoinment = async (req,res)=>{
             hour++;
         }
         
-        if(hr == 1)
+        if(hour == 1)
         {
             hr=2;
         }
-        if(hr ==6)
+        if(hour ==6)
         {
-            res.send('Appoinments are booked');
+           return res.send('Appoinments are booked');
         }
     }
 
+    res.send({hour,min});
 
-
-
-    await Appoinment.findOneAndUpdate({doctorId,created_at},{$push:{Appoinments:{userId,Symptoms,time:{hour,min}}}})
-    .then((u)=>{
-        res.send("Appoinment is booked")
-    })
-    .catch((e)=>{
-        res.send(e);
-        console.log(e)
-        })
     // considering Appoinemnts will be started at 9:00 
     
 
 
 
 }
+
+
+exports.confirmAppoinment = async (req,res)=>{
+        const userId = req.rootuser._id;
+        // data is going to come from frontend 
+        const result = req.body.result;
+
+        let date,month,year;
+        let dt   = new Date();
+
+        date = dt.getDate();  // date = parseInt(req.body.date);
+        month=dt.getMonth();
+        year = dt.getFullYear();
+
+        const doctorId = req.query.doctorId;
+        const Symptoms = req.body.Symptoms;
+        let hour,min;
+        hour = req.body.hour;
+        min  = req.body.min;
+        const created_at={date,month,year};
+     //----------------------------------------------------------------------
+        
+        if(result == "200")
+        {
+            await Appoinment.findOneAndUpdate({doctorId,created_at},{$push:{Appoinments:{userId,Symptoms,time:{hour,min}}}})
+            .then((u)=>{
+            return res.send("Appoinment is booked")
+            })
+            .catch((e)=>{
+                res.send(e);
+                console.log(e)
+                })
+        
+        
+        }else
+        {
+            res.send("Not confirmed by user ")
+        }
+            
+     }
+
+   
 
 
 exports.gettDoctors = async(req,res)=>{

@@ -2,7 +2,7 @@ const express = require("express");
 const Authentication = require('../Controllers/UserControllers/Authenticate')
 
 const userRoutes =express();
-const {bookAppoinment, gettDoctors}=  require('../Controllers/UserControllers/AppoinmentBook')
+const {bookAppoinment, gettDoctors, confirmAppoinment}=  require('../Controllers/UserControllers/AppoinmentBook')
 const {
     userLogin,
     userResister,
@@ -28,7 +28,7 @@ userRoutes.get('/getuser',Authentication,getUser);
 
 userRoutes.get('/bookapp',Authentication,bookAppoinment)
 
-
+userRoutes.post("/confirm",Authentication,confirmAppoinment);
 
 userRoutes.get('/doctors',gettDoctors);
 

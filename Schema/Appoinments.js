@@ -14,9 +14,16 @@ const AppoinmentSchema=new mongoose.Schema({
         required:true
     },
     created_at    : { date:{type:Number},month:{type:Number},year:{type:Number} },
+
    
     Appoinments:[
         {
+            status:{
+                type:String,
+                required:true 
+                ,
+                default:"Booked" 
+            },
            
             userId:{
                 type:String,
